@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            getTodos();
+
+            // Add Todo
+            document.getElementById('addTodoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const title = document.getElementById('todoTitle').value;
+                addTodo({ title: title });
+            });
+        });
+
+        // Fetch Todos and display
+        function getTodos() {
+    fetch('/api/todos')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(todos => {
+            if (!Array.isArray(todos)) {
+                throw new Error('Response is not an array');
+            }
+            const todosList = document.getElementById('todosList');
+            todosList.innerHTML = '';
+            todos.forEach(todo => {
+                const li = document.createElement('li');
+                li.textContent = todo.title + (todo.isCompleted ? ' (completed)' : '');
+                todosList.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+
+        // Add Todo
+        function addTodo(todo) {
+            fetch('/api/todos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(todo),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('todoTitle').value = '';
+                getTodos();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <form id="addTodoForm">
+        <input type="text" id="todoTitle" placeholder="Add new todo">
+        <button type="submit">Add</button>
+    </form>
+
+    <ul id="todosList"></ul>
+</body>
+</html>

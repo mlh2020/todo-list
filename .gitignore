@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+
+# Environment variable file
+.env
+
+# Logs
+*.log
+logs
+
+# Optional npm cache
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional Mac files
+.DS_Store
+
+# Optional Windows files
+Thumbs.db
